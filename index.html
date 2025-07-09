@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="style.css">
+  <title>Apresentação - Autopeças</title>
+  
+</head>
+
+<body>
+
+  <div id="inicio">
+    <h1>Clique para iniciar a apresentação</h1>
+    <button id="btnIniciar">Iniciar Apresentação</button>
+  </div>
+
+  <div id="container"></div>
+
+  <script>
+    const arquivosOriginais = [
+      "slides/buzina_ar.png",
+      "slides/cinta_carga.png",
+      "slides/cinta_carga_2.png",
+      "slides/farol_led.png",
+      "slides/oleo_68.png",
+      "slides/top_turbo.png",
+      "slides/vd_lanterna.mp4",
+      "slides/vd_lanterna_cabeca.mp4",
+      "slides/vd_silicone.mp4"
+    ];
+
+    let arquivos = [...arquivosOriginais];
+    embaralhar(arquivos);
+
+    const tempoImagem = 5000;
+    const container = document.getElementById("container");
+    const btnIniciar = document.getElementById("btnIniciar");
+    const telaInicial = document.getElementById("inicio");
+
+    let index = 0;
+    let permitirSom = false;
+
+    btnIniciar.addEventListener("click", () => {
+      permitirSom = true;
+      telaInicial.style.display = "none";
+
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch((e) => {
+          console.log("Erro ao entrar em tela cheia:", e);
+        });
+      }
+
+      mostrarProximo();
+    });
+
+    function embaralhar(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function mostrarProximo() {
+      const arquivo = arquivos[index];
+      const ext = arquivo.split('.').pop().toLowerCase();
+
+      let elemento;
+
+      if (['mp4', 'webm', 'ogg'].includes(ext)) {
+        elemento = document.createElement('video');
+        elemento.src = arquivo;
+        elemento.autoplay = true;
+        elemento.muted = !permitirSom;
+        elemento.controls = false;
+        elemento.playsInline = true;
+
+        elemento.onloadedmetadata = () => {
+          ajustarProporcao(elemento.videoWidth, elemento.videoHeight, elemento);
+          fadeIn(elemento);
+        };
+
+        elemento.onended = () => fadeOut(elemento, proximo);
+      } else {
+        elemento = document.createElement('img');
+        elemento.src = arquivo;
+
+        elemento.onload = () => {
+          ajustarProporcao(elemento.naturalWidth, elemento.naturalHeight, elemento);
+          fadeIn(elemento);
+          setTimeout(() => fadeOut(elemento, proximo), tempoImagem + 1000);
+        };
+      }
+
+      container.innerHTML = "";
+      container.appendChild(elemento);
+    }
+
+    function proximo() {
+      index++;
+      if (index >= arquivos.length) {
+        const ultimoSlide = arquivos[arquivos.length - 1];
+
+        do {
+          arquivos = [...arquivosOriginais];
+          embaralhar(arquivos);
+        } while (arquivos[0] === ultimoSlide);
+
+        index = 0;
+      }
+
+      mostrarProximo();
+    }
+
+    function fadeIn(el) {
+      setTimeout(() => el.classList.add("mostrar"), 50);
+    }
+
+    function fadeOut(el, callback) {
+      el.classList.remove("mostrar");
+      setTimeout(callback, 1000);
+    }
+
+    function ajustarProporcao(largura, altura, el) {
+      const proporcaoTela = window.innerWidth / window.innerHeight;
+      const proporcaoMidia = largura / altura;
+      el.style.objectFit = proporcaoMidia < proporcaoTela ? "contain" : "cover";
+    }
+
+    window.addEventListener("resize", () => {
+      const el = container.firstChild;
+      if (!el) return;
+      if (el.tagName === "IMG") {
+        ajustarProporcao(el.naturalWidth, el.naturalHeight, el);
+      } else if (el.tagName === "VIDEO") {
+        ajustarProporcao(el.videoWidth, el.videoHeight, el);
+      }
+    });
+  </script>
+</body>
+</html>
