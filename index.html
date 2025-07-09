@@ -18,6 +18,8 @@
 
   <div id="container"></div>
 
+  <audio id="musicaFundo" preload="auto"></audio>
+
   <script>
     const arquivosOriginais = [
       "slides/buzina_ar.png",
@@ -53,6 +55,8 @@
       }
 
       mostrarProximo();
+      tocarProximaMusica();
+
     });
 
     function embaralhar(array) {
@@ -76,12 +80,22 @@
         elemento.controls = false;
         elemento.playsInline = true;
 
+        // Pausa a música de fundo
+        if (!musicaFundo.paused) {
+          musicaFundo.pause();
+        }
+
         elemento.onloadedmetadata = () => {
           ajustarProporcao(elemento.videoWidth, elemento.videoHeight, elemento);
           fadeIn(elemento);
         };
 
-        elemento.onended = () => fadeOut(elemento, proximo);
+        elemento.onended = () => {
+          // Retomar a música de fundo após o vídeo
+          tocarProximaMusica();
+          fadeOut(elemento, proximo);
+        };
+
       } else {
         elemento = document.createElement('img');
         elemento.src = arquivo;
@@ -92,6 +106,7 @@
           setTimeout(() => fadeOut(elemento, proximo), tempoImagem + 1000);
         };
       }
+
 
       container.innerHTML = "";
       container.appendChild(elemento);
@@ -137,6 +152,43 @@
         ajustarProporcao(el.videoWidth, el.videoHeight, el);
       }
     });
+    // playlist musical
+    const playlistOriginal = [
+      "musicas/mus01.mp3",
+      "musicas/mus02.mp3",
+      "musicas/mus04.mp3",
+      "musicas/mus05.mp3",
+      "musicas/mus06.mp3",
+      "musicas/mus07.mp3",
+      "musicas/mus08.mp3",
+      "musicas/mus03.mp3"
+    ];
+    let playlist = [...playlistOriginal];
+    embaralhar(playlist);
+
+    const musicaFundo = document.getElementById("musicaFundo");
+    let musicaAtualIndex = 0;
+
+    // Toca a próxima música da lista
+    function tocarProximaMusica() {
+      if (playlist.length === 0) {
+        playlist = [...playlistOriginal];
+        embaralhar(playlist);
+        musicaAtualIndex = 0;
+      }
+
+      const musicaAtual = playlist[musicaAtualIndex];
+      musicaFundo.src = musicaAtual;
+      musicaFundo.play().catch(e => console.log("Erro ao tocar música:", e));
+
+      musicaAtualIndex++;
+    }
+
+    // Quando a música terminar, toca a próxima
+    musicaFundo.addEventListener("ended", () => {
+      tocarProximaMusica();
+    });
+
   </script>
 </body>
 </html>
