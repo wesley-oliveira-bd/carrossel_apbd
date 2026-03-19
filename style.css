@@ -5,12 +5,23 @@
 }
 
 html, body {
-  width: 100%;
-  height: 100%;
   background: #000;
   overflow: hidden;
   font-family: sans-serif;
+
+  /* 🔥 ROTACIONA PRA TV VERTICAL */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+
+  width: 100vh;
+  height: 100vw;
+
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
 }
+
+/* TELA INICIAL */
 
 #inicio {
   position: absolute;
@@ -41,6 +52,8 @@ html, body {
   cursor: pointer;
 }
 
+/* CONTAINER */
+
 #container {
   width: 100%;
   height: 100%;
@@ -49,22 +62,40 @@ html, body {
   overflow: hidden;
 }
 
-img, video {
+/* MIDIAS */
+
+#container img,
+#container video {
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 120%; /* começa fora da tela */
   transform: translate(-50%, -50%);
   max-width: 100%;
   max-height: 100%;
   width: auto;
   height: auto;
   object-fit: contain;
-  opacity: 0;
-  transition: opacity 1s ease;
+
+  opacity: 1;
+
+  transition:
+    left 1s ease,
+    opacity 1s ease;
+
   z-index: 1;
 }
 
+/* SLIDE ATIVO */
+
 .mostrar {
-  opacity: 1;
+  left: 50%; /* entra no centro */
   z-index: 2;
+}
+
+/* SLIDE SAINDO */
+
+.saindo {
+  left: -20%; /* sai para esquerda */
+  opacity: 0;
+  z-index: 1;
 }
