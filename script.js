@@ -108,12 +108,9 @@ function fadeIn(el) {
   setTimeout(() => el.classList.add("mostrar"), 50);
 }
 
-/*function fadeOut(el, callback) {
+function fadeOut(el, callback) {
   el.classList.remove("mostrar");
   setTimeout(callback, 1000);
-}*/
-function fadeIn(el) {
-  setTimeout(() => el.classList.add("mostrar"), 50);
 }
 
 function ajustarProporcao(largura, altura, el) {
