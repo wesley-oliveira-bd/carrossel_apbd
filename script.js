@@ -7,11 +7,11 @@ const arquivosOriginais = [
   "slides/farol_led.png",
   "slides/oleo_68.png",
   "slides/top_turbo.png",
-  //"slides/vd_lanterna.mp4",
-  //"slides/vd_lanterna_cabeca.mp4",
-  //"slides/vd_faixa_led.mp4",
-  //"slides/vd_agua_desm.mp4",
-  //"slides/vd_silicone.mp4",
+  "slides/vd_lanterna.mp4",
+  "slides/vd_lanterna_cabeca.mp4",
+  "slides/vd_faixa_led.mp4",
+  "slides/vd_agua_desm.mp4",
+  "slides/vd_silicone.mp4",
   "slides/oleo_vdo.png",
   "slides/oleo_top.png"
 ];
